@@ -1,3 +1,5 @@
+local L = DLib.I18n.Localize
+
 function AdvDupe2.LoadGhosts(dupe, info, moreinfo, name, preview)
 	AdvDupe2.RemoveGhosts()
 	AdvDupe2.Ghosting = true
@@ -82,14 +84,14 @@ function AdvDupe2.LoadGhosts(dupe, info, moreinfo, name, preview)
 	end
 
 	if(not preview) then
-		AdvDupe2.Info.File:SetText("File: "..name)
-		AdvDupe2.Info.Creator:SetText("Creator: "..creator)
-		AdvDupe2.Info.Date:SetText("Date: "..date)
-		AdvDupe2.Info.Time:SetText("Time: "..time)
-		AdvDupe2.Info.Size:SetText("Size: "..string.NiceSize(tonumber(info.size) or 0))
-		AdvDupe2.Info.Desc:SetText("Desc: "..(desc or ""))
-		AdvDupe2.Info.Entities:SetText("Entities: "..table.Count(dupe.Entities))
-		AdvDupe2.Info.Constraints:SetText("Constraints: "..table.Count(dupe.Constraints))
+		AdvDupe2.Info.File:SetText( L"gui.tool.advdupe2.dupeFile" .. name )
+		AdvDupe2.Info.Creator:SetText( L"gui.tool.advdupe2.dupeCreator" .. creator )
+		AdvDupe2.Info.Date:SetText( L"gui.tool.advdupe2.dupeDate" .. date )
+		AdvDupe2.Info.Time:SetText( L"gui.tool.advdupe2.dupeTime" .. time )
+		AdvDupe2.Info.Size:SetText( L"gui.tool.advdupe2.dupeSize" .. string.NiceSize(tonumber(info.size) or 0) )
+		AdvDupe2.Info.Desc:SetText( L"gui.tool.advdupe2.dupeDesc" .. (desc or "") )
+		AdvDupe2.Info.Entities:SetText( L"gui.tool.advdupe2.dupeEntities" .. table.Count(dupe.Entities) )
+		AdvDupe2.Info.Constraints:SetText( L"gui.tool.advdupe2.dupeConstraints" .. table.Count(dupe.Constraints) )
 	end
 
 	AdvDupe2.StartGhosting()
@@ -137,7 +139,7 @@ local function MakeGhostsFromTable(EntTable)
 	-- If there are too many entities we might not spawn..
 	if not IsValid(GhostEntity) then
 		AdvDupe2.RemoveGhosts()
-		AdvDupe2.Notify("Too many entities to spawn ghosts!", NOTIFY_ERROR)
+		AdvDupe2.Notify("gui.tool.advdup2.entsMaxGhosts", NOTIFY_ERROR)
 		return
 	end
 
@@ -243,7 +245,7 @@ net.Receive("AdvDupe2_SendGhosts", 	function(len, ply, len2)
 		AdvDupe2.Ghosting = true
 
 		if(not AdvDupe2.BusyBar) then
-			AdvDupe2.InitProgressBar("Ghosting: ")
+			AdvDupe2.InitProgressBar("gui.tool.advdupe2.ghosting")
 			AdvDupe2.BusyBar = false
 		end
 
@@ -275,7 +277,7 @@ function AdvDupe2.StartGhosting()
 
 	if AdvDupe2.TotalGhosts > 1 then
 		if not AdvDupe2.BusyBar then
-			AdvDupe2.InitProgressBar("Ghosting: ")
+			AdvDupe2.InitProgressBar("gui.tool.advdupe2.ghosting")
 			AdvDupe2.BusyBar = false
 		end
 		hook.Add("Tick", "AdvDupe2_SpawnGhosts", SpawnGhosts)
@@ -294,7 +296,7 @@ local Lheadpos, Lheadang = Vector(), Angle()
 function AdvDupe2.UpdateGhosts(force)
 	if not IsValid(AdvDupe2.HeadGhost) then
 		AdvDupe2.RemoveGhosts()
-		AdvDupe2.Notify("Invalid ghost parent!", NOTIFY_ERROR)
+		AdvDupe2.Notify("gui.tool.advdup2.ghostParent", NOTIFY_ERROR)
 		return
 	end
 

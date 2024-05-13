@@ -4,7 +4,7 @@ local function AdvDupe2_ReceiveFile(len, ply)
 	net.ReadStream(nil, function(data)
 		AdvDupe2.RemoveProgressBar()
 		if(!data)then
-			AdvDupe2.Notify("File was not saved!",NOTIFY_ERROR,5)
+			AdvDupe2.Notify("gui.tool.advdupe2.fileNotSaved",NOTIFY_ERROR,5)
 			return
 		end
 		local path
@@ -20,7 +20,7 @@ local function AdvDupe2_ReceiveFile(len, ply)
 
 		local dupefile = file.Open(path, "wb", "DATA")
 		if(!dupefile)then
-			AdvDupe2.Notify("File was not saved!",NOTIFY_ERROR,5)
+			AdvDupe2.Notify("gui.tool.advdupe2.fileNotSaved",NOTIFY_ERROR,5)
 			return
 		end
 		dupefile:Write(data)
@@ -28,10 +28,10 @@ local function AdvDupe2_ReceiveFile(len, ply)
 		
 		local errored = false
 		if(LocalPlayer():GetInfo("advdupe2_debug_openfile")=="1")then
-			if(not file.Exists(path, "DATA"))then AdvDupe2.Notify("File does not exist", NOTIFY_ERROR) return end
+			if(not file.Exists(path, "DATA"))then AdvDupe2.Notify("gui.tool.advdupe2.fileNotExists", NOTIFY_ERROR) return end
 			
 			local readFile = file.Open(path, "rb", "DATA")
-			if not readFile then AdvDupe2.Notify("File could not be read", NOTIFY_ERROR) return end
+			if not readFile then AdvDupe2.Notify("gui.tool.advdupe2.fileCouldntRead", NOTIFY_ERROR) return end
 			local readData = readFile:Read(readFile:Size())
 			readFile:Close()
 			local success,dupe,info,moreinfo = AdvDupe2.Decode(readData)
@@ -63,7 +63,7 @@ local function AdvDupe2_ReceiveFile(len, ply)
 			AdvDupe2.FileBrowser.Browser.pnlCanvas:Sort(AdvDupe2.FileBrowser.Browser.pnlCanvas.ActionNode)
 		end
 		if(!errored)then
-			AdvDupe2.Notify("File successfully saved!",NOTIFY_GENERIC, 5)
+			AdvDupe2.Notify("gui.tool.advdupe2.fileSaved",NOTIFY_GENERIC, 5)
 		end
 	end)
 end
@@ -71,7 +71,7 @@ net.Receive("AdvDupe2_ReceiveFile", AdvDupe2_ReceiveFile)
 
 local uploading = nil
 function AdvDupe2.UploadFile(ReadPath, ReadArea)
-	if uploading then AdvDupe2.Notify("Already opening file, please wait.", NOTIFY_ERROR) return end
+	if uploading then AdvDupe2.Notify("gui.tool.advdupe2.fileInProgress", NOTIFY_ERROR) return end
 	if(ReadArea==0)then
 		ReadPath = AdvDupe2.DataFolder.."/"..ReadPath..".txt"
 	elseif(ReadArea==1)then
@@ -80,10 +80,10 @@ function AdvDupe2.UploadFile(ReadPath, ReadArea)
 		ReadPath = "adv_duplicator/"..ReadPath..".txt"
 	end
 	
-	if(not file.Exists(ReadPath, "DATA"))then AdvDupe2.Notify("File does not exist", NOTIFY_ERROR) return end
+	if(not file.Exists(ReadPath, "DATA"))then AdvDupe2.Notify("gui.tool.advdupe2.fileNotExists", NOTIFY_ERROR) return end
 	
 	local read = file.Read(ReadPath)
-	if not read then AdvDupe2.Notify("File could not be read", NOTIFY_ERROR) return end
+	if not read then AdvDupe2.Notify("gui.tool.advdupe2.fileCouldntRead", NOTIFY_ERROR) return end
 	local name = string.Explode("/", ReadPath)
 	name = name[#name]
 	name = string.sub(name, 1, #name-4)
@@ -101,6 +101,6 @@ function AdvDupe2.UploadFile(ReadPath, ReadArea)
 		
 		AdvDupe2.LoadGhosts(dupe, info, moreinfo, name)
 	else
-		AdvDupe2.Notify("File could not be decoded. ("..dupe..") Upload Canceled.", NOTIFY_ERROR)
+		AdvDupe2.Notify("gui.tool.advdupe2.fileCantDecode", NOTIFY_ERROR, nil, dupe)
 	end
 end

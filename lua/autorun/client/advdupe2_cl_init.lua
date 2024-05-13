@@ -16,7 +16,9 @@ include( "advdupe2/sh_codec.lua" )
 include( "advdupe2/cl_file.lua" )
 include( "advdupe2/cl_ghost.lua" )
 
-function AdvDupe2.Notify(msg,typ,dur)
+local L = DLib.I18n.Localize
+function AdvDupe2.Notify(msg,typ,dur, ...)
+	msg = L(msg, ...)
 	surface.PlaySound(typ == 1 and "buttons/button10.wav" or "ambient/water/drip1.wav")
 	GAMEMODE:AddNotify(msg, typ or NOTIFY_GENERIC, dur or 5)
 	//if not game.SinglePlayer() then

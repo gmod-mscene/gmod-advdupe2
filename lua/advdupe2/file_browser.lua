@@ -410,10 +410,10 @@ function BROWSER:DoNodeRightClick(node)
 	local root = GetNodeRoot(node).Label:GetText()
 	if (node.Derma.ClassName == "advdupe2_browser_file") then
 		if (node.Control.Search) then
-			Menu:AddOption("Open", function()
+			Menu:AddOption("gui.tool.advdupe2.files.open", function()
 				AdvDupe2.UploadFile(GetNodePath(node.Ref))
 			end)
-			Menu:AddOption("Preview", function()
+			Menu:AddOption("gui.tool.advdupe2.files.preview", function()
 				local ReadPath, ReadArea = GetNodePath(node.Ref)
 				if (ReadArea == 0) then
 					ReadPath = AdvDupe2.DataFolder .. "/" .. ReadPath .. ".txt"
@@ -437,10 +437,10 @@ function BROWSER:DoNodeRightClick(node)
 				end
 			end)
 		else
-			Menu:AddOption("Open", function()
+			Menu:AddOption("gui.tool.advdupe2.files.open", function()
 				AdvDupe2.UploadFile(GetNodePath(node))
 			end)
-			Menu:AddOption("Preview", function()
+			Menu:AddOption("gui.tool.advdupe2.files.preview", function()
 				local ReadPath, ReadArea = GetNodePath(node)
 				if (ReadArea == 0) then
 					ReadPath = AdvDupe2.DataFolder .. "/" .. ReadPath .. ".txt"
@@ -464,10 +464,10 @@ function BROWSER:DoNodeRightClick(node)
 				end
 			end)
 			Menu:AddSpacer()
-			Menu:AddOption("Rename", function()
+			Menu:AddOption("gui.tool.advdupe2.files.rename", function()
 				if (parent.Expanding) then return end
 				parent.Submit:SetMaterial("icon16/page_edit.png")
-				parent.Submit:SetTooltip("Rename File")
+				parent.Submit:SetTooltip("gui.tool.advdupe2.files.renameFile")
 				parent.Desc:SetVisible(false)
 				parent.Info:SetVisible(false)
 				parent.FileName.FirstChar = true
@@ -494,13 +494,13 @@ function BROWSER:DoNodeRightClick(node)
 				end
 				parent.FileName.OnEnter = parent.Submit.DoClick
 			end)
-			Menu:AddOption("Move File", function()
+			Menu:AddOption("gui.tool.advdupe2.files.move", function()
 				parent.Submit:SetMaterial("icon16/page_paste.png")
-				parent.Submit:SetTooltip("Move File")
+				parent.Submit:SetTooltip("gui.tool.advdupe2.files.move")
 				parent.FileName:SetVisible(false)
 				parent.Desc:SetVisible(false)
 				parent.Info:SetText(
-					"Select the folder you want to move \nthe File to.")
+					"gui.tool.advdupe2.files.moveDesc")
 				parent.Info:SizeToContents()
 				parent.Info:SetVisible(true)
 				AdvDupe2.FileBrowser:Slide(true)
@@ -509,19 +509,15 @@ function BROWSER:DoNodeRightClick(node)
 					MoveFileClient(node.Control.m_pSelectedItem)
 				end
 			end)
-			Menu:AddOption("Delete", function()
+			Menu:AddOption("gui.tool.advdupe2.files.delete", function()
 				parent.Submit:SetMaterial("icon16/bin_empty.png")
-				parent.Submit:SetTooltip("Delete File")
+				parent.Submit:SetTooltip("gui.tool.advdupe2.files.deleteFile")
 				parent.FileName:SetVisible(false)
 				parent.Desc:SetVisible(false)
 				if (#node.Label:GetText() > 22) then
-					parent.Info:SetText(
-						'Are you sure that you want to delete \nthe FILE, "' ..
-							node.Label:GetText() .. '" \nfrom your CLIENT?')
+					parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.deleteAsk2", node.Label:GetText()) )
 				else
-					parent.Info:SetText(
-						'Are you sure that you want to delete \nthe FILE, "' ..
-							node.Label:GetText() .. '" from your CLIENT?')
+					parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.deleteAsk", node.Label:GetText()) )
 				end
 				parent.Info:SizeToContents()
 				parent.Info:SetVisible(true)
@@ -544,10 +540,10 @@ function BROWSER:DoNodeRightClick(node)
 		end
 	else
 		if (root ~= "-Advanced Duplicator 1-") then
-			Menu:AddOption("Save", function()
+			Menu:AddOption("gui.tool.advdupe2.files.save", function()
 				if (parent.Expanding) then return end
 				parent.Submit:SetMaterial("icon16/page_save.png")
-				parent.Submit:SetTooltip("Save Duplication")
+				parent.Submit:SetTooltip("gui.tool.advdupe2.files.saveDupe")
 				if (parent.FileName:GetValue() == "Folder_Name...") then
 					parent.FileName:SetText("File_Name...")
 				end
@@ -594,10 +590,10 @@ function BROWSER:DoNodeRightClick(node)
 				parent.Desc.OnEnter = parent.Submit.DoClick
 			end)
 		end
-		Menu:AddOption("New Folder", function()
+		Menu:AddOption("gui.tool.advdupe2.files.newFolder", function()
 			if (parent.Expanding) then return end
 			parent.Submit:SetMaterial("icon16/folder_add.png")
-			parent.Submit:SetTooltip("Add new folder")
+			parent.Submit:SetTooltip("gui.tool.advdupe2.files.addNewFolder")
 			if (parent.FileName:GetValue() == "File_Name...") then
 				parent.FileName:SetText("Folder_Name...")
 			end
@@ -614,9 +610,9 @@ function BROWSER:DoNodeRightClick(node)
 			parent.Submit.DoClick = function() AddNewFolder(node) end
 			parent.FileName.OnEnter = parent.Submit.DoClick
 		end)
-		Menu:AddOption("Search", function()
+		Menu:AddOption("gui.tool.advdupe2.files.search", function()
 			parent.Submit:SetMaterial("icon16/find.png")
-			parent.Submit:SetTooltip("Search Files")
+			parent.Submit:SetTooltip("gui.tool.advdupe2.files.searchFiles")
 			if (parent.FileName:GetValue() == "Folder_Name...") then
 				parent.FileName:SetText("File_Name...")
 			end
@@ -635,11 +631,9 @@ function BROWSER:DoNodeRightClick(node)
 				AddHistory(parent.FileName:GetValue())
 				parent.FileName:SetVisible(false)
 				parent.Submit:SetMaterial("icon16/arrow_undo.png")
-				parent.Submit:SetTooltip("Return to Browser")
+				parent.Submit:SetTooltip("gui.tool.advdupe2.files.retToBrowser")
 				parent.Info:SetVisible(true)
-				parent.Info:SetText(#parent.Search.pnlCanvas.Files ..
-										' files found searching for, "' ..
-										parent.FileName:GetValue() .. '"')
+				parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.searchFound", #parent.Search.pnlCanvas.Files, parent.FileName:GetValue()) )
 				parent.Info:SizeToContents()
 				parent.Submit.DoClick = function()
 					parent.Search:Remove()
@@ -653,19 +647,15 @@ function BROWSER:DoNodeRightClick(node)
 			parent.FileName.OnEnter = parent.Submit.DoClick
 		end)
 		if (node.Label:GetText()[1] ~= "-") then
-			Menu:AddOption("Delete", function()
+			Menu:AddOption("gui.tool.advdupe2.files.delete", function()
 				parent.Submit:SetMaterial("icon16/bin_empty.png")
-				parent.Submit:SetTooltip("Delete Folder")
+				parent.Submit:SetTooltip("gui.tool.advdupe2.files.deleteFolder")
 				parent.FileName:SetVisible(false)
 				parent.Desc:SetVisible(false)
 				if (#node.Label:GetText() > 22) then
-					parent.Info:SetText(
-						'Are you sure that you want to delete \nthe FOLDER, "' ..
-							node.Label:GetText() .. '" \nfrom your CLIENT?')
+					parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.deleteAskFolder2", node.Label:GetText()) )
 				else
-					parent.Info:SetText(
-						'Are you sure that you want to delete \nthe FOLDER, "' ..
-							node.Label:GetText() .. '" from your CLIENT?')
+					parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.deleteAskFolder", node.Label:GetText()) )
 				end
 				parent.Info:SizeToContents()
 				parent.Info:SetVisible(true)
@@ -689,14 +679,14 @@ function BROWSER:DoNodeRightClick(node)
 	end
 	if (not node.Control.Search) then
 		Menu:AddSpacer()
-		Menu:AddOption("Collapse Folder", function()
+		Menu:AddOption("gui.tool.advdupe2.files.collapseFolder", function()
 			if (node.ParentNode.ParentNode) then
 				node.ParentNode:SetExpanded(false)
 			end
 		end)
-		Menu:AddOption("Collapse Root", function() CollapseParentsComplete(node) end)
+		Menu:AddOption("gui.tool.advdupe2.files.collapseRoot", function() CollapseParentsComplete(node) end)
 		if (parent.Expanded) then
-			Menu:AddOption("Cancel Action", function() parent.Cancel:DoClick() end)
+			Menu:AddOption("gui.tool.advdupe2.files.cancel", function() parent.Cancel:DoClick() end)
 		end
 	end
 
@@ -1164,22 +1154,22 @@ function PANEL:Init()
 	self.Refresh = vgui.Create("DImageButton", self)
 	self.Refresh:SetMaterial("icon16/arrow_refresh.png")
 	self.Refresh:SizeToContents()
-	self.Refresh:SetTooltip("Refresh Files")
+	self.Refresh:SetTooltip("gui.tool.advdupe2.files.refresh")
 	self.Refresh.DoClick = function(button) UpdateClientFiles() end
 
 	self.Help = vgui.Create("DImageButton", self)
 	self.Help:SetMaterial("icon16/help.png")
 	self.Help:SizeToContents()
-	self.Help:SetTooltip("Help Section")
+	self.Help:SetTooltip("gui.tool.advdupe2.files.help")
 	self.Help.DoClick = function(btn)
 		local Menu = DermaMenu()
-		Menu:AddOption("Bug Reporting", function()
+		Menu:AddOption("gui.tool.advdupe2.files.helpBugs", function()
 			gui.OpenURL("https://github.com/wiremod/advdupe2/issues")
 		end)
-		Menu:AddOption("Controls", function()
+		Menu:AddOption("gui.tool.advdupe2.files.helpControls", function()
 			gui.OpenURL("https://github.com/wiremod/advdupe2/wiki/Controls")
 		end)
-		Menu:AddOption("Commands", function()
+		Menu:AddOption("gui.tool.advdupe2.files.helpCommands", function()
 			gui.OpenURL(
 				"https://github.com/wiremod/advdupe2/wiki/Server-settings")
 		end)
@@ -1189,7 +1179,7 @@ function PANEL:Init()
 	self.Submit = vgui.Create("DImageButton", self)
 	self.Submit:SetMaterial("icon16/page_save.png")
 	self.Submit:SizeToContents()
-	self.Submit:SetTooltip("Confirm Action")
+	self.Submit:SetTooltip("gui.tool.advdupe2.files.confirm")
 	self.Submit.DoClick = function()
 		self.Expanding = true
 		AdvDupe2.FileBrowser:Slide(false)
@@ -1198,7 +1188,7 @@ function PANEL:Init()
 	self.Cancel = vgui.Create("DImageButton", self)
 	self.Cancel:SetMaterial("icon16/cross.png")
 	self.Cancel:SizeToContents()
-	self.Cancel:SetTooltip("Cancel Action")
+	self.Cancel:SetTooltip("gui.tool.advdupe2.files.cancel")
 	self.Cancel.DoClick = function()
 		self.Expanding = true
 		AdvDupe2.FileBrowser:Slide(false)
@@ -1342,6 +1332,7 @@ function PANEL:Init()
 
 	self.Info = vgui.Create("DLabel", self)
 	self.Info:SetVisible(false)
+	self.Info:SetDark(true)
 
 end
 

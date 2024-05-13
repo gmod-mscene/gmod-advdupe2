@@ -38,7 +38,7 @@ concommand.Add("AdvDupe2_SaveFile", SaveFile)
 function AdvDupe2.SendToClient(ply, data, autosave)
 	if(not IsValid(ply))then return end
 	ply.AdvDupe2.Downloading = true
-	AdvDupe2.InitProgressBar(ply,"Saving:")
+	AdvDupe2.InitProgressBar(ply,"gui.tool.advdupe2.saving")
 
 	net.Start("AdvDupe2_ReceiveFile")
 	net.WriteUInt(autosave, 8)
@@ -132,7 +132,7 @@ local function AdvDupe2_ReceiveFile(len, ply)
 		AdvDupe2.Notify(ply, "Duplicator is Busy!", NOTIFY_ERROR, 5)
 	elseif stream then
 		ply.AdvDupe2.Uploading = true
-		AdvDupe2.InitProgressBar(ply, "Opening: ")
+		AdvDupe2.InitProgressBar(ply, "gui.tool.advdupe2.opening")
 	end
 end
 net.Receive("AdvDupe2_ReceiveFile", AdvDupe2_ReceiveFile)

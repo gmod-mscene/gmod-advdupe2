@@ -221,7 +221,7 @@ if(SERVER) then
 		end
 
 		dupe.Pasting = true
-		AdvDupe2.Notify(ply,"Pasting...")
+		AdvDupe2.Notify(ply,"gui.tool.advdupe2.notifyPasting")
 		local origin
 		if(tobool(ply:GetInfo("advdupe2_original_origin"))) then
 			origin = dupe.HeadEnt.Pos
@@ -402,19 +402,19 @@ if(SERVER) then
 		net.Send(ply)
 
 		if(dupe.Queued) then
-			AdvDupe2.InitProgressBar(ply, "Queued: ")
+			AdvDupe2.InitProgressBar(ply, "gui.tool.advdupe2.queued")
 			return
 		end
 
 		if(dupe.Pasting) then
-			AdvDupe2.InitProgressBar(ply, "Pasting: ")
+			AdvDupe2.InitProgressBar(ply, "gui.tool.advdupe2.pasting")
 			return
 		else
 			if(dupe.Uploading) then
-				AdvDupe2.InitProgressBar(ply, "Opening: ")
+				AdvDupe2.InitProgressBar(ply, "gui.tool.advdupe2.opening")
 				return
 			elseif(dupe.Downloading) then
-				AdvDupe2.InitProgressBar(ply, "Saving: ")
+				AdvDupe2.InitProgressBar(ply, "gui.tool.advdupe2.saving")
 				return
 			end
 		end
@@ -558,7 +558,7 @@ if(SERVER) then
 	function AdvDupe2.FinishPasting(Player, Paste)
 		Player.AdvDupe2.Pasting=false
 		AdvDupe2.RemoveProgressBar(Player)
-		if(Paste) then AdvDupe2.Notify(Player,"Finished Pasting!") end
+		if(Paste) then AdvDupe2.Notify(Player,"gui.tool.advdupe2.notifyPastingFinished") end
 	end
 
 	--function for creating a contraption spawner
@@ -846,6 +846,8 @@ end
 
 if(CLIENT) then
 
+	local L = DLib.I18n.Localize
+
 	function TOOL:LeftClick(trace)
 		if(trace and AdvDupe2.HeadGhost) then
 			return true
@@ -990,15 +992,6 @@ if(CLIENT) then
 		return AdvDupe2.Rotation
 	end
 
-	language.Add( "Tool.advdupe2.name",	"Advanced Duplicator 2" )
-	language.Add( "Tool.advdupe2.desc",	"Duplicate things." )
-	language.Add( "Tool.advdupe2.0",	"Primary: Paste, Secondary: Copy, Secondary+World: Select/Deselect All, Secondary+Shift: Area copy." )
-	language.Add( "Tool.advdupe2.1",	"Primary: Paste, Secondary: Copy an area, Reload: Autosave an area, Secondary+Shift: Cancel." )
-	language.Add( "Undone_AdvDupe2",	"Undone AdvDupe2 paste" )
-	language.Add( "Cleanup_AdvDupe2",	"AdvDupe2 Duplications" )
-	language.Add( "Cleaned_AdvDupe2",	"Cleaned up all AdvDupe2 Duplications" )
-	language.Add( "SBoxLimit_AdvDupe2",	"You've reached the AdvDupe2 Duplicator limit!" )
-
 	CreateClientConVar("advdupe2_offset_world", 0, false, true)
 	CreateClientConVar("advdupe2_offset_z", 0, false, true)
 	CreateClientConVar("advdupe2_offset_pitch", 0, false, true)
@@ -1043,33 +1036,33 @@ if(CLIENT) then
 
 		local Check = vgui.Create("DCheckBoxLabel")
 
-		Check:SetText( "Paste at original position" )
+		Check:SetText( "gui.tool.advdupe2.origPos" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_original_origin" )
 		Check:SetValue( 0 )
-		Check:SetToolTip("Paste at the position originally copied")
+		Check:SetToolTip("gui.tool.advdupe2.origPosDesc")
 		CPanel:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Paste with constraints" )
+		Check:SetText( "gui.tool.advdupe2.pasteConstraints" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_paste_constraints" )
 		Check:SetValue( 1 )
-		Check:SetToolTip("Paste with or without constraints")
+		Check:SetToolTip("gui.tool.advdupe2.pasteConstraintsDesc")
 		CPanel:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Paste with parenting" )
+		Check:SetText( "gui.tool.advdupe2.pasteParenting" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_paste_parents" )
 		Check:SetValue( 1 )
-		Check:SetToolTip("Paste with or without parenting")
+		Check:SetToolTip("gui.tool.advdupe2.pasteParentingDesc")
 		CPanel:AddItem(Check)
 
 		local Check_1 = vgui.Create("DCheckBoxLabel")
 		local Check_2 = vgui.Create("DCheckBoxLabel")
 
-		Check_1:SetText( "Unfreeze all after paste" )
+		Check_1:SetText( "gui.tool.advdupe2.unfreezePaste" )
 		Check_1:SetDark(true)
 		Check_1:SetConVar( "advdupe2_paste_unfreeze" )
 		Check_1:SetValue( 0 )
@@ -1078,10 +1071,10 @@ if(CLIENT) then
 				Check_2:SetValue(0)
 			end
 		end
-		Check_1:SetToolTip("Unfreeze all props after pasting")
+		Check_1:SetToolTip("gui.tool.advdupe2.unfreezePasteDesc")
 		CPanel:AddItem(Check_1)
 
-		Check_2:SetText( "Preserve frozen state after paste" )
+		Check_2:SetText( "gui.tool.advdupe2.preserveFrozen" )
 		Check_2:SetDark(true)
 		Check_2:SetConVar( "advdupe2_preserve_freeze" )
 		Check_2:SetValue( 0 )
@@ -1090,41 +1083,41 @@ if(CLIENT) then
 				Check_1:SetValue(0)
 			end
 		end
-		Check_2:SetToolTip("Makes props have the same frozen state as when they were copied")
+		Check_2:SetToolTip("gui.tool.advdupe2.preserveFrozenDesc")
 		CPanel:AddItem(Check_2)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Area copy constrained props outside of box" )
+		Check:SetText( "gui.tool.advdupe2.copyConstrained" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_copy_outside" )
 		Check:SetValue( 0 )
-		Check:SetToolTip("Copy entities outside of the area copy that are constrained to entities insde")
+		Check:SetToolTip("gui.tool.advdupe2.copyConstrainedDesc")
 		CPanel:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "World/Area copy only your own props" )
+		Check:SetText( "gui.tool.advdupe2.copyOnlyMine" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_copy_only_mine" )
 		Check:SetValue( 1 )
-		Check:SetToolTip("Copy entities outside of the area copy that are constrained to entities insde")
+		Check:SetToolTip("gui.tool.advdupe2.copyOnlyMineDesc")
 		CPanel:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Sort constraints by their connections" )
+		Check:SetText( "gui.tool.advdupe2.sortConstraints" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_sort_constraints" )
 		Check:SetValue( GetConVarNumber("advdupe2_sort_constraints") )
-		Check:SetToolTip( "Orders constraints so that they build a rigid constraint system." )
+		Check:SetToolTip( "gui.tool.advdupe2.sortConstraintsDesc" )
 		CPanel:AddItem(Check)
 
 		local NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Ghost Percentage:" )
+		NumSlider:SetText( "gui.tool.advdupe2.ghostPercentage" )
 		NumSlider.Label:SetDark(true)
 		NumSlider:SetMin( 0 )
 		NumSlider:SetMax( 100 )
 		NumSlider:SetDecimals( 0 )
 		NumSlider:SetConVar( "advdupe2_limit_ghost" )
-		NumSlider:SetToolTip("Change the percent of ghosts to spawn")
+		NumSlider:SetToolTip("gui.tool.advdupe2.ghostPercentageDesc")
 		--If these funcs are not here, problems occur for each
 		local func = NumSlider.Slider.OnMouseReleased
 		NumSlider.Slider.OnMouseReleased = function(self, mcode) func(self, mcode) AdvDupe2.StartGhosting() end
@@ -1135,18 +1128,18 @@ if(CLIENT) then
 		CPanel:AddItem(NumSlider)
 
 		NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Area Copy Size:" )
+		NumSlider:SetText( "gui.tool.advdupe2.areaCopySize" )
 		NumSlider.Label:SetDark(true)
 		NumSlider:SetMin( 0 )
 		NumSlider:SetMax( 30720 )
 		NumSlider:SetDecimals( 0 )
 		NumSlider:SetConVar( "advdupe2_area_copy_size" )
-		NumSlider:SetToolTip("Change the size of the area copy")
+		NumSlider:SetToolTip("gui.tool.advdupe2.areaCopySizeDesc")
 		CPanel:AddItem(NumSlider)
 
 		local Category1 = vgui.Create("DCollapsibleCategory")
 		CPanel:AddItem(Category1)
-		Category1:SetLabel("Offsets")
+		Category1:SetLabel("gui.tool.advdupe2.offsets")
 		Category1:SetExpanded(0)
 
 		local parent = FileBrowser:GetParent():GetParent():GetParent():GetParent()
@@ -1161,59 +1154,59 @@ if(CLIENT) then
 		Category1:SetContents( CategoryContent1 )
 
 		NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Height Offset" )
+		NumSlider:SetText( "gui.tool.advdupe2.heightOffset" )
 		NumSlider.Label:SetDark(true)
 		NumSlider:SetMin( -2500 )
 		NumSlider:SetMax( 2500 )
 		NumSlider:SetDefaultValue( 0 )
 		NumSlider:SetDecimals( 3 )
 		NumSlider:SetConVar("advdupe2_offset_z")
-		NumSlider:SetToolTip("Changes the dupe Z offset")
+		NumSlider:SetToolTip("gui.tool.advdupe2.heightOffsetDesc")
 		CategoryContent1:AddItem(NumSlider)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Use World Angles" )
+		Check:SetText( "gui.tool.advdupe2.useWorldAngles" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_offset_world" )
 		Check:SetValue( 0 )
-		Check:SetToolTip("Use world angles for the offset instead of the main entity")
+		Check:SetToolTip("gui.tool.advdupe2.useWorldAnglesDesc")
 		CategoryContent1:AddItem(Check)
 
 		NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Pitch Offset" )
+		NumSlider:SetText( "gui.tool.advdupe2.pitchOffset" )
 		NumSlider.Label:SetDark(true)
 		NumSlider:SetMin( -180 )
 		NumSlider:SetMax( 180 )
 		NumSlider:SetDefaultValue( 0 )
 		NumSlider:SetDecimals( 3 )
-		NumSlider:SetToolTip("Changes the dupe pitch offset")
+		NumSlider:SetToolTip("gui.tool.advdupe2.pitchOffsetDesc")
 		NumSlider:SetConVar("advdupe2_offset_pitch")
 		CategoryContent1:AddItem(NumSlider)
 
 		NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Yaw Offset" )
+		NumSlider:SetText( "gui.tool.advdupe2.yawOffset" )
 		NumSlider.Label:SetDark(true)
 		NumSlider:SetMin( -180 )
 		NumSlider:SetMax( 180 )
 		NumSlider:SetDefaultValue( 0 )
 		NumSlider:SetDecimals( 3 )
-		NumSlider:SetToolTip("Changes the dupe yaw offset")
+		NumSlider:SetToolTip("gui.tool.advdupe2.yawOffsetDesc")
 		NumSlider:SetConVar("advdupe2_offset_yaw")
 		CategoryContent1:AddItem(NumSlider)
 
 		NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Roll Offset" )
+		NumSlider:SetText( "gui.tool.advdupe2.rollOffset" )
 		NumSlider.Label:SetDark(true)
 		NumSlider:SetMin( -180 )
 		NumSlider:SetMax( 180 )
 		NumSlider:SetDefaultValue( 0 )
 		NumSlider:SetDecimals( 3 )
-		NumSlider:SetToolTip("Changes the dupe roll offset")
+		NumSlider:SetToolTip("gui.tool.advdupe2.rollOffsetDesc")
 		NumSlider:SetConVar("advdupe2_offset_roll")
 		CategoryContent1:AddItem(NumSlider)
 
 		local Btn = vgui.Create("DButton")
-		Btn:SetText("Reset")
+		Btn:SetText("gui.tool.advdupe2.reset")
 		Btn.DoClick = function()
 			RunConsoleCommand("advdupe2_offset_z", 0)
 			RunConsoleCommand("advdupe2_offset_pitch", 0)
@@ -1226,7 +1219,7 @@ if(CLIENT) then
 		--[[Dupe Information]]--
 		local Category2 = vgui.Create("DCollapsibleCategory")
 		CPanel:AddItem(Category2)
-		Category2:SetLabel("Dupe Information")
+		Category2:SetLabel("gui.tool.advdupe2.dupeInfo")
 		Category2:SetExpanded(0)
 
 		local CategoryContent2 = vgui.Create( "DPanelList" )
@@ -1240,49 +1233,49 @@ if(CLIENT) then
 		AdvDupe2.Info = {}
 
 		local lbl = vgui.Create( "DLabel" )
-		lbl:SetText(AdvDupe2.InfoText.File or "File: ")
+		lbl:SetText(AdvDupe2.InfoText.File or "gui.tool.advdupe2.dupeFile")
 		lbl:SetDark(true)
 		CategoryContent2:AddItem(lbl)
 		AdvDupe2.Info.File = lbl
 
 		lbl = vgui.Create( "DLabel" )
-		lbl:SetText(AdvDupe2.InfoText.Creator or "Creator:")
+		lbl:SetText(AdvDupe2.InfoText.Creator or "gui.tool.advdupe2.dupeCreator")
 		lbl:SetDark(true)
 		CategoryContent2:AddItem(lbl)
 		AdvDupe2.Info.Creator = lbl
 
 		lbl = vgui.Create( "DLabel" )
-		lbl:SetText(AdvDupe2.InfoText.Date or "Date:")
+		lbl:SetText(AdvDupe2.InfoText.Date or "gui.tool.advdupe2.dupeDate")
 		lbl:SetDark(true)
 		CategoryContent2:AddItem(lbl)
 		AdvDupe2.Info.Date = lbl
 
 		lbl = vgui.Create( "DLabel" )
-		lbl:SetText(AdvDupe2.InfoText.Time or "Time:")
+		lbl:SetText(AdvDupe2.InfoText.Time or "gui.tool.advdupe2.dupeTime")
 		lbl:SetDark(true)
 		CategoryContent2:AddItem(lbl)
 		AdvDupe2.Info.Time = lbl
 
 		lbl = vgui.Create( "DLabel" )
-		lbl:SetText(AdvDupe2.InfoText.Size or "Size:")
+		lbl:SetText(AdvDupe2.InfoText.Size or "gui.tool.advdupe2.dupeSize")
 		lbl:SetDark(true)
 		CategoryContent2:AddItem(lbl)
 		AdvDupe2.Info.Size = lbl
 
 		lbl = vgui.Create( "DLabel" )
-		lbl:SetText(AdvDupe2.InfoText.Desc or "Desc:")
+		lbl:SetText(AdvDupe2.InfoText.Desc or "gui.tool.advdupe2.dupeDesc")
 		lbl:SetDark(true)
 		CategoryContent2:AddItem(lbl)
 		AdvDupe2.Info.Desc = lbl
 
 		lbl = vgui.Create( "DLabel" )
-		lbl:SetText(AdvDupe2.InfoText.Entities or "Entities:")
+		lbl:SetText(AdvDupe2.InfoText.Entities or "gui.tool.advdupe2.dupeEntities")
 		lbl:SetDark(true)
 		CategoryContent2:AddItem(lbl)
 		AdvDupe2.Info.Entities = lbl
 
 		lbl = vgui.Create( "DLabel" )
-		lbl:SetText(AdvDupe2.InfoText.Constraints or "Constraints:")
+		lbl:SetText(AdvDupe2.InfoText.Constraints or "gui.tool.advdupe2.dupeConstraints")
 		lbl:SetDark(true)
 		CategoryContent2:AddItem(lbl)
 		AdvDupe2.Info.Constraints = lbl
@@ -1290,7 +1283,7 @@ if(CLIENT) then
 	--[[Contraption Spawner]]--
 		local Category3 = vgui.Create("DCollapsibleCategory")
 		CPanel:AddItem(Category3)
-		Category3:SetLabel("Contraption Spawner")
+		Category3:SetLabel("gui.tool.advdupe2.contraptionSpawner")
 		Category3:SetExpanded(0)
 
 		local CategoryContent3 = vgui.Create( "DPanelList" )
@@ -1304,12 +1297,12 @@ if(CLIENT) then
 		local ctrl = vgui.Create( "CtrlNumPad" )
 		ctrl:SetConVar1( "advdupe2_contr_spawner_key" )
 		ctrl:SetConVar2( "advdupe2_contr_spawner_undo_key" )
-		ctrl:SetLabel1( "Spawn Key")
-		ctrl:SetLabel2( "Undo Key" )
+		ctrl:SetLabel1( "gui.tool.advdupe2.spawnKey")
+		ctrl:SetLabel2( "gui.tool.advdupe2.undoKey" )
 		CategoryContent3:AddItem(ctrl)
 
 		NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Spawn Delay" )
+		NumSlider:SetText( "gui.tool.advdupe2.spawnDelay" )
 		NumSlider.Label:SetDark(true)
 		if(game.SinglePlayer()) then
 			NumSlider:SetMin( 0 )
@@ -1326,7 +1319,7 @@ if(CLIENT) then
 		CategoryContent3:AddItem(NumSlider)
 
 		NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Undo Delay" )
+		NumSlider:SetText( "gui.tool.advdupe2.undoDelay" )
 		NumSlider.Label:SetDark(true)
 		if(game.SinglePlayer()) then
 			NumSlider:SetMin( 0 )
@@ -1347,28 +1340,28 @@ if(CLIENT) then
 		CategoryContent3:AddItem(NumSlider)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Disable gravity for all spawned props" )
+		Check:SetText( "gui.tool.advdupe2.disableGravity" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_contr_spawner_disgrav" )
 		Check:SetValue( 0 )
 		CategoryContent3:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Disable drag for all spawned props" )
+		Check:SetText( "gui.tool.advdupe2.disableDrag" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_contr_spawner_disdrag" )
 		Check:SetValue( 0 )
 		CategoryContent3:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Add spawner's velocity to contraption" )
+		Check:SetText( "gui.tool.advdupe2.addSpawnersVelocity" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_contr_spawner_addvel" )
 		Check:SetValue( 1 )
 		CategoryContent3:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Disable drawing spawner props" )
+		Check:SetText( "gui.tool.advdupe2.disableDrawing" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_contr_spawner_hideprops" )
 		Check:SetValue( 0 )
@@ -1377,7 +1370,7 @@ if(CLIENT) then
 		--[[Area Auto Save]]--
 		local Category4 = vgui.Create("DCollapsibleCategory")
 		CPanel:AddItem(Category4)
-		Category4:SetLabel("Area Auto Save")
+		Category4:SetLabel("gui.tool.advdupe2.areaAutoSave")
 		Category4:SetExpanded(0)
 
 		local CategoryContent4 = vgui.Create( "DPanelList" )
@@ -1389,29 +1382,29 @@ if(CLIENT) then
 		CategoryContent4.OnMouseWheeled = function(self, dlta) parent:OnMouseWheeled(dlta) end
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Only copy contraption" )
+		Check:SetText( "gui.tool.advdupe2.onlyCopyContraption" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_auto_save_contraption" )
 		Check:SetValue( 0 )
-		Check:SetToolTip("Only copy a contraption instead of an area")
+		Check:SetToolTip("gui.tool.advdupe2.onlyCopyContraptionDesc")
 		CategoryContent4:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Overwrite File" )
+		Check:SetText( "gui.tool.advdupe2.overwriteFile" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_auto_save_overwrite" )
 		Check:SetValue( 1 )
-		Check:SetToolTip("Overwrite the file instead of creating a new one everytime")
+		Check:SetToolTip("gui.tool.advdupe2.overwriteFileDesc")
 		CategoryContent4:AddItem(Check)
 
 		NumSlider = vgui.Create( "DNumSlider" )
-		NumSlider:SetText( "Minutes to Save:" )
+		NumSlider:SetText( "gui.tool.advdupe2.minsToSave" )
 		NumSlider.Label:SetDark(true)
 		NumSlider:SetMin( 2 )
 		NumSlider:SetMax( 30 )
 		NumSlider:SetDecimals( 0 )
 		NumSlider:SetConVar( "advdupe2_auto_save_time" )
-		NumSlider:SetToolTip("Interval time to save in minutes")
+		NumSlider:SetToolTip("gui.tool.advdupe2.minsToSaveDesc")
 		CategoryContent4:AddItem(NumSlider)
 
 		local pnl = vgui.Create("Panel")
@@ -1421,7 +1414,7 @@ if(CLIENT) then
 		CategoryContent4:AddItem(pnl)
 
 		local label = vgui.Create("DLabel", pnl)
-		label:SetText("Directory: ")
+		label:SetText("gui.tool.advdupe2.saveDir")
 		label:SizeToContents()
 		label:SetDark(true)
 		label:SetPos(5,7)
@@ -1440,7 +1433,7 @@ if(CLIENT) then
 		btn:SetPos(x + txtbox:GetWide() + 5, 7)
 		btn:SetMaterial("icon16/folder_explore.png")
 		btn:SizeToContents()
-		btn:SetToolTip("Browse")
+		btn:SetToolTip("gui.tool.advdupe2.browse")
 		btn.DoClick = function()
 			local ScrollBar = parent.VBar
 			ScrollBar:AnimateTo(0, 1, 0, 0.2)
@@ -1499,7 +1492,7 @@ if(CLIENT) then
 		btn = vgui.Create("DButton", pnl)
 		btn:SetSize(50, 35)
 		btn:SetPos(pnl:GetWide()/4-10, 30)
-		btn:SetText("Show")
+		btn:SetText("gui.tool.advdupe2.show")
 		btn.DoClick = function()
 			if(AdvDupe2.AutoSavePos) then
 				RunConsoleCommand("advdupe2_area_copy_size", AdvDupe2.AutoSaveSize)
@@ -1512,7 +1505,7 @@ if(CLIENT) then
 		btn = vgui.Create("DButton", pnl)
 		btn:SetSize(50, 35)
 		btn:SetPos((pnl:GetWide()/4)*3-40, 30)
-		btn:SetText("Turn Off")
+		btn:SetText("gui.tool.advdupe2.turnOff")
 		btn:SetDisabled(true)
 		btn.DoClick = function(self)
 			RunConsoleCommand("AdvDupe2_RemoveAutoSave")
@@ -1525,7 +1518,7 @@ if(CLIENT) then
 		--[[Experimental Section]]--
 		local Category5 = vgui.Create("DCollapsibleCategory")
 		CPanel:AddItem(Category5)
-		Category5:SetLabel("Experimental Section")
+		Category5:SetLabel("gui.tool.advdupe2.experimental")
 		Category5:SetExpanded(0)
 
 		local CategoryContent5 = vgui.Create( "DPanelList" )
@@ -1537,33 +1530,33 @@ if(CLIENT) then
 		CategoryContent5.OnMouseWheeled = function(self, dlta) parent:OnMouseWheeled(dlta) end
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Disable parented props physics interaction" )
+		Check:SetText( "gui.tool.advdupe2.DisableParentedPhysics" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_paste_disparents" )
 		Check:SetValue( 0 )
 		CategoryContent5:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Disable Dupe Spawn Protection" )
+		Check:SetText( "gui.tool.advdupe2.disableDSP" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_paste_protectoveride" )
 		Check:SetValue( 1 )
-		Check:SetToolTip("Check this if you things don't look right after pasting.")
+		Check:SetToolTip("gui.tool.advdupe2.disableDSPDesc")
 		CategoryContent5:AddItem(Check)
 
 		Check = vgui.Create("DCheckBoxLabel")
-		Check:SetText( "Open file after Saving" )
+		Check:SetText( "gui.tool.advdupe2.openFileAfterSaving" )
 		Check:SetDark(true)
 		Check:SetConVar( "advdupe2_debug_openfile" )
 		Check:SetValue( 1 )
-		Check:SetToolTip("Check this if you want your files to be opened after saving them.")
+		Check:SetToolTip("gui.tool.advdupe2.openFileAfterSavingDesc")
 		CategoryContent5:AddItem(Check)
 
 		--[[Save Map]]--
 		if(LocalPlayer():IsAdmin()) then
 			local Category6 = vgui.Create("DCollapsibleCategory")
 			CPanel:AddItem(Category6)
-			Category6:SetLabel("Save Map")
+			Category6:SetLabel("gui.tool.advdupe2.saveMap")
 			Category6:SetExpanded(0)
 
 			local CategoryContent6 = vgui.Create( "DPanelList" )
@@ -1581,7 +1574,7 @@ if(CLIENT) then
 			CategoryContent6:AddItem(pnl)
 
 			label = vgui.Create("DLabel", pnl)
-			label:SetText("File Name: ")
+			label:SetText("gui.tool.advdupe2.filename")
 			label:SizeToContents()
 			label:SetDark(true)
 			label:SetPos(5,7)
@@ -1632,20 +1625,35 @@ if(CLIENT) then
 	surface.CreateFont ("AD2Font", {font="Arial", size=40, weight=1000}) ---Remember to use gm_clearfonts
 	surface.CreateFont ("AD2TitleFont", {font="Arial", size=24, weight=1000})
 
+	local toolLastStr = ""
+	local toolScreenTranslated = ""
+
+	hook.Add("DLib.LanguageChanged", "advdupe2.upd", function()
+		toolLastStr = ""
+	end)
+
+	function TOOL:SetToolScreenText(text)
+		if toolLastStr == text then return end
+
+		toolLastStr = text
+		toolScreenTranslated = L(text)
+	end
+
 	function TOOL:DrawToolScreen()
 		if(not AdvDupe2) then return true end
 
-		local text = "Ready"
+		local text = "gui.tool.advdupe2.ready"
 		local state, co = false
 		local ply = LocalPlayer()
 
 		if(AdvDupe2.Preview) then
-			text = "Preview"
+			text = "gui.tool.advdupe2.preview"
 		end
 		if(AdvDupe2.ProgressBar.Text) then
 			state = true
 			text = AdvDupe2.ProgressBar.Text
 		end
+		self:SetToolScreenText(text)
 
 		cam.Start2D()
 
@@ -1668,7 +1676,7 @@ if(CLIENT) then
 			surface.SetTextColor( 255, 255, 255, 255 )
 
 			draw.SimpleText("Advanced Duplicator 2", "AD2TitleFont", 128, 50, CWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-			draw.SimpleText(text, "AD2Font", 128, 128, CWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText(toolScreenTranslated, "AD2Font", 128, 128, CWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			if(state) then
 				draw.RoundedBox( 6, 32, 178, 192, 28, Color( 255, 255, 255, 150 ) )
 				draw.RoundedBox( 6, 34, 180, 188*(AdvDupe2.ProgressBar.Percent / 100), 24, Color( 0, 255, 0, 255 ) )
@@ -1805,6 +1813,13 @@ if(CLIENT) then
 	end)
 
 	function AdvDupe2.InitProgressBar(label)
+		-- express-bindings compatibility
+		if label == "Saving:" then
+			label = "gui.tool.advdupe2.saving"
+		elseif label == "Opening: " then
+			label = "gui.tool.advdupe2.opening"
+		end
+
 		AdvDupe2.ProgressBar = {}
 		AdvDupe2.ProgressBar.Text = label
 		AdvDupe2.ProgressBar.Percent = 0
@@ -1822,7 +1837,7 @@ if(CLIENT) then
 		AdvDupe2.ProgressBar = {}
 		AdvDupe2.BusyBar = false
 		if(AdvDupe2.Ghosting) then
-			AdvDupe2.InitProgressBar("Ghosting: ")
+			AdvDupe2.InitProgressBar("gui.tool.advdupe2.ghosting")
 			AdvDupe2.BusyBar = false
 			AdvDupe2.ProgressBar.Percent = AdvDupe2.CurrentGhost/AdvDupe2.TotalGhosts*100
 		end
@@ -1843,23 +1858,23 @@ if(CLIENT) then
 	end)
 
 	net.Receive("AdvDupe2_ReportModel", function()
-		print("Advanced Duplicator 2: Invalid Model: "..net.ReadString())
+		print( L"gui.tool.advdupe2.reportModel" .. net.ReadString() )
 	end)
 
 	net.Receive("AdvDupe2_ReportClass", function()
-		print("Advanced Duplicator 2: Invalid Class: "..net.ReadString())
+		print( L"gui.tool.advdupe2.reportClass" .. net.ReadString() )
 	end)
 
 	net.Receive("AdvDupe2_ResetDupeInfo", function()
 		if not AdvDupe2.Info then return end
-		AdvDupe2.Info.File:SetText("File:")
-		AdvDupe2.Info.Creator:SetText("Creator:")
-		AdvDupe2.Info.Date:SetText("Date:")
-		AdvDupe2.Info.Time:SetText("Time:")
-		AdvDupe2.Info.Size:SetText("Size:")
-		AdvDupe2.Info.Desc:SetText("Desc:")
-		AdvDupe2.Info.Entities:SetText("Entities:")
-		AdvDupe2.Info.Constraints:SetText("Constraints:")
+		AdvDupe2.Info.File:SetText( L"gui.tool.advdupe2.dupeFile" )
+		AdvDupe2.Info.Creator:SetText( L"gui.tool.advdupe2.dupeCreator" )
+		AdvDupe2.Info.Date:SetText( L"gui.tool.advdupe2.dupeDate" )
+		AdvDupe2.Info.Time:SetText( L"gui.tool.advdupe2.dupeTime" )
+		AdvDupe2.Info.Size:SetText( L"gui.tool.advdupe2.dupeSize" )
+		AdvDupe2.Info.Desc:SetText( L"gui.tool.advdupe2.dupeDesc" )
+		AdvDupe2.Info.Entities:SetText( L"gui.tool.advdupe2.dupeEntities" )
+		AdvDupe2.Info.Constraints:SetText( L"gui.tool.advdupe2.dupeConstraints" )
 	end)
 
 	net.Receive("AdvDupe2_CanAutoSave", function()
@@ -1882,23 +1897,23 @@ if(CLIENT) then
 
 	net.Receive("AdvDupe2_SetDupeInfo", function(len, ply, len2)
 		if AdvDupe2.Info then
-			AdvDupe2.Info.File:SetText("File: "..net.ReadString())
-			AdvDupe2.Info.Creator:SetText("Creator: "..net.ReadString())
-			AdvDupe2.Info.Date:SetText("Date: "..net.ReadString())
-			AdvDupe2.Info.Time:SetText("Time: "..net.ReadString())
-			AdvDupe2.Info.Size:SetText("Size: "..net.ReadString())
-			AdvDupe2.Info.Desc:SetText("Desc: "..net.ReadString())
-			AdvDupe2.Info.Entities:SetText("Entities: "..net.ReadString())
-			AdvDupe2.Info.Constraints:SetText("Constraints: "..net.ReadString())
+			AdvDupe2.Info.File:SetText( L"gui.tool.advdupe2.dupeFile" .. net.ReadString() )
+			AdvDupe2.Info.Creator:SetText( L"gui.tool.advdupe2.dupeCreator" .. net.ReadString() )
+			AdvDupe2.Info.Date:SetText( L"gui.tool.advdupe2.dupeDate" .. net.ReadString() )
+			AdvDupe2.Info.Time:SetText( L"gui.tool.advdupe2.dupeTime" .. net.ReadString() )
+			AdvDupe2.Info.Size:SetText( L"gui.tool.advdupe2.dupeSize" .. net.ReadString() )
+			AdvDupe2.Info.Desc:SetText( L"gui.tool.advdupe2.dupeDesc" .. net.ReadString() )
+			AdvDupe2.Info.Entities:SetText( L"gui.tool.advdupe2.dupeEntities" .. net.ReadString())
+			AdvDupe2.Info.Constraints:SetText( L"gui.tool.advdupe2.dupeConstraints" .. net.ReadString() )
 		else
-			AdvDupe2.InfoText.File = "File: "..net.ReadString()
-			AdvDupe2.InfoText.Creator = "Creator: "..net.ReadString()
-			AdvDupe2.InfoText.Date = "Date: "..net.ReadString()
-			AdvDupe2.InfoText.Time = "Time: "..net.ReadString()
-			AdvDupe2.InfoText.Size = "Size: "..net.ReadString()
-			AdvDupe2.InfoText.Desc = "Desc: "..net.ReadString()
-			AdvDupe2.InfoText.Entities = "Entities: "..net.ReadString()
-			AdvDupe2.InfoText.Constraints = "Constraints: "..net.ReadString()
+			AdvDupe2.InfoText.File = L"gui.tool.advdupe2.dupeFile" .. net.ReadString()
+			AdvDupe2.InfoText.Creator = L"gui.tool.advdupe2.dupeCreator" .. net.ReadString()
+			AdvDupe2.InfoText.Date = L"gui.tool.advdupe2.dupeDate" .. net.ReadString()
+			AdvDupe2.InfoText.Time = L"gui.tool.advdupe2.dupeTime" .. net.ReadString()
+			AdvDupe2.InfoText.Size = L"gui.tool.advdupe2.dupeSize" .. net.ReadString()
+			AdvDupe2.InfoText.Desc = L"gui.tool.advdupe2.dupeDesc" .. net.ReadString()
+			AdvDupe2.InfoText.Entities = L"gui.tool.advdupe2.dupeEntities" .. net.ReadString()
+			AdvDupe2.InfoText.Constraints = L"gui.tool.advdupe2.dupeConstraints" .. net.ReadString()
 		end
 	end)
 end

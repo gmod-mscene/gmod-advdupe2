@@ -378,13 +378,16 @@ local function Copy(ply, Ent, EntTable, ConstraintTable, Offset)
 	local function RecursiveCopy(Ent)
 		local index = Ent:EntIndex()
 		if EntTable[index] then return end
+		print("RC", Ent)
 
 		local cantool = Ent.CPPICanTool
 		if cantool and not cantool(Ent, ply, "advdupe2") then return end
+		print("cantool", Ent)
 
 		local EntData = CopyEntTable(Ent, Offset)
 		if EntData == nil then return end
 		EntTable[index] = EntData
+		print("EntData", Ent)
 
 		if Ent.Constraints then
 			for k, Constraint in pairs(Ent.Constraints) do
@@ -438,6 +441,9 @@ local function Copy(ply, Ent, EntTable, ConstraintTable, Offset)
 		end
 	end
 	RecursiveCopy(Ent)
+
+	-- PrintTable(EntTable)
+	-- PrintTable(ConstraintTable)
 
 	return EntTable, ConstraintTable
 end
@@ -1228,7 +1234,7 @@ local function AdvDupe2_Spawn()
 
 	if (Queue.Entity) then
 		if (Queue.Current == 1) then
-			AdvDupe2.InitProgressBar(Queue.Player, "Pasting:")
+			AdvDupe2.InitProgressBar(Queue.Player, "gui.tool.advdupe2.pasting")
 			Queue.Player.AdvDupe2.Queued = false
 		end
 		if (Queue.Current > #Queue.SortedEntities) then
@@ -1598,7 +1604,7 @@ function AdvDupe2.InitPastingQueue(Player, PositionOffset, AngleOffset, OrigPos,
 
 	Queue.Plus = #Queue.SortedEntities
 	Queue.Percent = 1 / (#Queue.SortedEntities + #Queue.ConstraintList)
-	AdvDupe2.InitProgressBar(Player, "Queued:")
+	AdvDupe2.InitProgressBar(Player, "gui.tool.advdupe2.queued")
 	Player.AdvDupe2.Queued = true
 	if (not AdvDupe2.JobManager.PastingHook) then
 		DisablePropCreateEffect = true
