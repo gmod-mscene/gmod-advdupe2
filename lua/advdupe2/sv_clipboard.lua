@@ -378,16 +378,13 @@ local function Copy(ply, Ent, EntTable, ConstraintTable, Offset)
 	local function RecursiveCopy(Ent)
 		local index = Ent:EntIndex()
 		if EntTable[index] then return end
-		print("RC", Ent)
 
 		local cantool = Ent.CPPICanTool
 		if cantool and not cantool(Ent, ply, "advdupe2") then return end
-		print("cantool", Ent)
 
 		local EntData = CopyEntTable(Ent, Offset)
 		if EntData == nil then return end
 		EntTable[index] = EntData
-		print("EntData", Ent)
 
 		if Ent.Constraints then
 			for k, Constraint in pairs(Ent.Constraints) do
