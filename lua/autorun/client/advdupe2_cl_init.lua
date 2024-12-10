@@ -16,7 +16,7 @@ include( "advdupe2/sh_codec.lua" )
 include( "advdupe2/cl_file.lua" )
 include( "advdupe2/cl_ghost.lua" )
 
-local L = DLib.I18n.Localize
+local L = DeadDuck.tr.Localize
 function AdvDupe2.Notify(msg,typ,dur, ...)
 	msg = L(msg, ...)
 	surface.PlaySound(typ == 1 and "buttons/button10.wav" or "ambient/water/drip1.wav")

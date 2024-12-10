@@ -850,7 +850,7 @@ end
 
 if(CLIENT) then
 
-	local L = DLib.I18n.Localize
+	local L = DeadDuck.tr.Localize
 
 	function TOOL:LeftClick(trace)
 		if(trace and AdvDupe2.HeadGhost) then
@@ -1632,7 +1632,7 @@ if(CLIENT) then
 	local toolLastStr = ""
 	local toolScreenTranslated = ""
 
-	hook.Add("DLib.LanguageChanged", "advdupe2.upd", function()
+	hook.Add("deadduck.LanguageChanged", "advdupe2.upd", function()
 		toolLastStr = ""
 	end)
 

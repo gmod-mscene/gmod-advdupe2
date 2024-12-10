@@ -515,9 +515,9 @@ function BROWSER:DoNodeRightClick(node)
 				parent.FileName:SetVisible(false)
 				parent.Desc:SetVisible(false)
 				if (#node.Label:GetText() > 22) then
-					parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.deleteAsk2", node.Label:GetText()) )
+					parent.Info:SetText( DeadDuck.tr.Localize("gui.tool.advdupe2.files.deleteAsk2", node.Label:GetText()) )
 				else
-					parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.deleteAsk", node.Label:GetText()) )
+					parent.Info:SetText( DeadDuck.tr.Localize("gui.tool.advdupe2.files.deleteAsk", node.Label:GetText()) )
 				end
 				parent.Info:SizeToContents()
 				parent.Info:SetVisible(true)
@@ -633,7 +633,7 @@ function BROWSER:DoNodeRightClick(node)
 				parent.Submit:SetMaterial("icon16/arrow_undo.png")
 				parent.Submit:SetTooltip("gui.tool.advdupe2.files.retToBrowser")
 				parent.Info:SetVisible(true)
-				parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.searchFound", #parent.Search.pnlCanvas.Files, parent.FileName:GetValue()) )
+				parent.Info:SetText( DeadDuck.tr.Localize("gui.tool.advdupe2.files.searchFound", #parent.Search.pnlCanvas.Files, parent.FileName:GetValue()) )
 				parent.Info:SizeToContents()
 				parent.Submit.DoClick = function()
 					parent.Search:Remove()
@@ -653,9 +653,9 @@ function BROWSER:DoNodeRightClick(node)
 				parent.FileName:SetVisible(false)
 				parent.Desc:SetVisible(false)
 				if (#node.Label:GetText() > 22) then
-					parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.deleteAskFolder2", node.Label:GetText()) )
+					parent.Info:SetText( DeadDuck.tr.Localize("gui.tool.advdupe2.files.deleteAskFolder2", node.Label:GetText()) )
 				else
-					parent.Info:SetText( DLib.I18n.Localize("gui.tool.advdupe2.files.deleteAskFolder", node.Label:GetText()) )
+					parent.Info:SetText( DeadDuck.tr.Localize("gui.tool.advdupe2.files.deleteAskFolder", node.Label:GetText()) )
 				end
 				parent.Info:SizeToContents()
 				parent.Info:SetVisible(true)

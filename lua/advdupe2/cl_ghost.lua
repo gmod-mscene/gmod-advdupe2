@@ -1,4 +1,4 @@
-local L = DLib.I18n.Localize
+local L = DeadDuck.tr.Localize
 
 function AdvDupe2.LoadGhosts(dupe, info, moreinfo, name, preview)
 	AdvDupe2.RemoveGhosts()
